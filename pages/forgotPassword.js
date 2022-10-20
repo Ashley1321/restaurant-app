@@ -1,45 +1,71 @@
-import React from "react";
-import { StyleSheet, Text, View, TextInput, Image } from 'react-native';
-import icon from '../assets/logo.png'
+import {useState} from "react";
+import { StyleSheet, Text, View, TextInput, Image, Alert, TouchableOpacity } from 'react-native';
+import icon from '../assets/continental.png';
+import {useNavigation} from '@react-navigation/native';
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from '../config/firebase';
+
+
 
 
 function ResetPassword() {
+    const navigation = useNavigation();
+
+    const [email,setEmail] = useState('');
+
+    const reset = () => {
+
+        sendPasswordResetEmail(auth,email).then(()=>{
+            if (email !== '') {
+                navigation.navigate("landingPage")
+                Alert.alert('Check Your Emails')
+                console.log("succefully reset")
+            }else{
+                Alert.alert('Enter Email Adress')
+                console.log('Input Empty')
+            }
+      
+          }).catch((error)=>{
+            console.log(error);
+          })
+       
+        
+    }
+
+    const signIn = () =>{
+        navigation.navigate('Home')
+    }
     return (
-        <View style={{ flex: 1, alignItems: 'center', backgroundColor: 'white' }}>
-            <View style={{ width: '100%', height: '50%', backgroundColor: 'white', alignItems: 'center', justifyContent: 'center' }}>
+        <View style={{ flex: 1, alignItems: 'center', backgroundColor: 'black' }}>
+            <View style={{ width: '100%', height: '50%', backgroundColor: 'white', alignItems: 'center', justifyContent: 'center',  borderBottomLeftRadius:50, borderBottomRightRadius: 50  }}>
                 <Image source={icon} style={styles.logo} />
             </View>
 
-            <View style={{ width: '100%', height: "50%", backgroundColor: "#2B2C34", borderTopEndRadius: 21, borderTopStartRadius: 21 }}>
-                <View style={{
-                    width: '90%',
-                    height: '80%', backgroundColor: '#2B2C34',
-                    alignSelf: "center",
-                    marginTop: -120,
-                    borderWidth: 1,
-                    borderColor: "white",
-                    borderRadius: 12
-                }}>
+            <View style={{ width: '100%', height: "50%", backgroundColor: "black", }}>
+                
                     <Text style={styles.signIn}>Reset Password</Text>
                     <TextInput
                         style={styles.input}
+                        onChangeText={(text)=>setEmail(text)}
+                        value={email}
                         placeholder="Email Adress" />
-
-                    <Text style={{
-                        backgroundColor: '#E85800',
-                        color: 'white',
-                        textAlign: 'center',
-                        padding: 7,
-                        marginTop: 10,
-                        width: "50%",
-                        alignSelf: 'center',
-                        borderRadius: 5
-                    }}>
-                        Reset
-                    </Text>
-                </View>
+                    <TouchableOpacity>
+                        <Text style={{
+                            backgroundColor: '#95e349',
+                            color: 'white',
+                            textAlign: 'center',
+                            padding: 7,
+                            marginTop: 10,
+                            width: "50%",
+                            alignSelf: 'center',
+                            borderRadius: 5
+                        }} onPress={reset} >
+                            Reset
+                        </Text>
+                    </TouchableOpacity>
+                    
+                
                 <Text style={{
-                    backgroundColor: '#E85800',
                     color: 'white',
                     textAlign: 'center',
                     padding: 7,
@@ -47,7 +73,7 @@ function ResetPassword() {
                     width: "50%",
                     alignSelf: 'center',
                     borderRadius: 5
-                }}>
+                }} onPress={signIn}>
                     Sign In
                 </Text>
 
@@ -61,15 +87,15 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     logo: {
-        width: 150,
-        height: 150,
-        marginTop: -100
+        width: 250,
+        height: 250,
+        marginTop: -60
     },
     signIn: {
         color: 'white',
         textAlign: "center",
         fontSize: 20,
-        marginTop: 10
+        marginTop: 35
     },
     input: {
         color: 'white',
@@ -77,9 +103,9 @@ const styles = StyleSheet.create({
         padding: 10,
         margin: 30,
         borderBottomColor: 'white',
-        borderEndColor: '#2B2C34',
-        borderLeftColor: "#2B2C34",
-        borderTopColor: '#2B2C34',
+        borderEndColor: 'black',
+        borderLeftColor: "black",
+        borderTopColor: 'black',
 
     },
 });
